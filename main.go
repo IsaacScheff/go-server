@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+    "os"
 )
 
 func main() {
@@ -12,10 +13,15 @@ func main() {
 
 	m.HandleFunc("/", handlePage)
 
-	const addr = ":8080"
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080" // default port if not specified
+    }
+
+	//const addr = ":8080"
 	srv := http.Server{
 		Handler:      m,
-		Addr:         addr,
+		Addr:         port,
 		WriteTimeout: 30 * time.Second,
 		ReadTimeout:  30 * time.Second,
 	}
@@ -25,6 +31,8 @@ func main() {
 	fmt.Println("server started on ", addr)
 	err := srv.ListenAndServe()
 	log.Fatal(err)
+
+    os.Getenv()
 }
 
 func handlePage(w http.ResponseWriter, r *http.Request) {
